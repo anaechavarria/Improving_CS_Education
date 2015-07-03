@@ -1,11 +1,12 @@
 *.in
-Foundations of data science.pdf
 *.docx
-output.txt
 *.out
 *.aux
 *.log
 *.nav
 *.snm
 *.toc
+*.vrb
+Foundations of data science.pdf
+output.txt
 run.sh

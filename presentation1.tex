@@ -1,0 +1,1221 @@
+
+\documentclass[table]{beamer}
+
+\mode<presentation> {
+\usetheme{Madrid}
+}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{color}
+
+
+\usetikzlibrary{calc, graphs, graphdrawing, arrows.meta}
+\usegdlibrary{trees}
+\usepgflibrary{arrows}
+
+\newcommand{\tikzmark}[2]{\tikz[overlay,remember picture,baseline] \node [anchor=base] (#1) {$#2$};}
+
+\newcommand{\DownArrow}[3][]{%
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[-latex, thick,#1] ($(#2.north)+(0,1.0cm)$) -- node [right=3pt]{#3} (#2.north);
+  \end{tikzpicture}
+}
+
+\newcommand{\UpArrow}[3][]{%
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[-latex, thick,#1] ($(#2.south)-(0,1.0cm)$) -- node [right=3pt]{#3} (#2.south);
+  \end{tikzpicture}
+}
+
+\newcommand{\DrawFlag}[2][]{%
+    \begin{tikzpicture}[overlay,remember picture]
+        \fill[#1] ($(#2.south)-(0,25pt)$) circle (4pt);
+    \end{tikzpicture}
+}
+
+\newcommand{\CurvedArrow}[3][]{%
+  \begin{tikzpicture}[overlay,remember picture]
+      \draw[-latex, thick, #1, ->] (#2.south) to [out = 270, in = 90] (#3.north);
+  \end{tikzpicture}
+}
+
+\newcommand{\CurvedArrowAbove}[3][]{%
+  \begin{tikzpicture}[overlay,remember picture]
+      \draw[-latex, thick, #1, ->] (#2.north) to [out = 120, in = 60] (#3.north);
+  \end{tikzpicture}
+}
+
+
+\usepackage{cancel}
+\usepackage{hhline}
+\usepackage{booktabs}
+\usepackage{array}
+
+\usepackage{nameref}
+\makeatletter
+\newcommand*{\currentname}{\@currentlabelname}
+\makeatother
+
+\newcommand{\green}{\cellcolor{green!20}}
+\newcommand{\yellow}{\cellcolor{yellow!40}}
+\newcommand{\blue}{\cellcolor{blue!20}}
+\newcommand{\gray}{\cellcolor{gray!20}}
+\newcommand{\red}{\cellcolor{red!20}}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Algorithms and Data Structures]{Introduction to Algorithms and Data Structures: An example} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author[A. Echavarr\'ia \and S. Palacio]{Ana Echavarr\'ia (aechava3@eafit.edu.co) \and\\ Santiago Palacio (spalac24@eafit.edu.co)} % Your name
+
+\institute[EAFIT] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+EAFIT University \\ % Your institution for the title page
+\medskip
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+\newcolumntype{C}{>{\centering\arraybackslash}p{3pt}}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview}
+\tableofcontents
+\end{frame}
+
+\section{Problem Description}
+\begin{frame}
+    \frametitle{\currentname}
+    \begin{center}
+    	\begin{tabular}{|c|c|lr|c|}
+            \hline
+    		$a_1$ & $a_2$ & \ldots & \ldots & $a_n$\\
+            \hline
+    	\end{tabular}
+    \end{center}
+    \begin{itemize}
+        \item Stream of numbers.
+        \item Count how many times each $a_i$ appears.
+        \item $0 \leq a_i < 10^{12} \text{ and } n < 10^9$.
+    \end{itemize}
+\end{frame}
+\section{Naive Approach}
+\begin{frame}
+
+    Step \only<1>{0}\only<2>{1}
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{\only<1>{0}\only<2>{1}}} & 0 & 0 & \tikzmark{A2}{0} & 0 & \tikzmark{A3}{0} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \only<2>{
+        \UpArrow[red]{A1}{Element = 4}
+        \DownArrow[blue]{B1}{Lookup = 4}
+    }
+\end{frame}
+
+\begin{frame}
+
+    Step \only<1>{2}\only<2>{3}
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{{1}}} & 0 & 0 & \tikzmark{A2}{0} & 0 & \tikzmark{A3}{0} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \only<1>{
+        \UpArrow[red]{A1}{Element = 4}
+        \DownArrow[blue]{B2}{Lookup = 6}
+    }
+    \only<2>{
+    \UpArrow[red]{A1}{Element = 4}
+    \DownArrow[blue]{B3}{Lookup = 3}
+    }
+\end{frame}
+
+
+\begin{frame}
+
+    Step 39
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{1} & 3 & 1 & \tikzmark{A2}{0} & 0 & \tikzmark{A3}{0} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A2}{Element = 0}
+    \DownArrow[blue]{B3}{Lookup = 3}
+\end{frame}
+
+\begin{frame}
+
+    Step 40
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{{1}}} & 3 & 1 & \tikzmark{A2}{1} & 0 & \tikzmark{A3}{0} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A2}{Element = 0}
+    \DownArrow[blue]{B4}{Lookup = 0}
+\end{frame}
+
+\begin{frame}
+
+    Step 41
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{{1}}} & 3 & 1 & \tikzmark{A2}{1} & 0 & \tikzmark{A3}{0} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A2}{Element = 0}
+    \DownArrow[blue]{B5}{Lookup = 7}
+\end{frame}
+
+\begin{frame}
+
+    Step 42
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{{1}}} & 3 & 1 & \tikzmark{A2}{2} & 0 & \tikzmark{A3}{0} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A2}{Element = 0}
+    \DownArrow[blue]{B6}{Lookup = 0}
+\end{frame}
+
+\begin{frame}
+
+    Step 43
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{{1}}} & 3 & 1 & \tikzmark{A2}{2} & 0 & \tikzmark{A3}{0} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A2}{Element = 0}
+    \DownArrow[blue]{B7}{Lookup = 6}
+\end{frame}
+
+\begin{frame}
+
+    Step 63
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{{1}}} & 3 & 1 & \tikzmark{A2}{2} & 1 & \tikzmark{A3}{0} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A3}{Element = 0}
+    \DownArrow[blue]{B3}{Lookup = 3}
+\end{frame}
+
+\begin{frame}
+
+    Step 64
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & 1\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{{1}}} & 3 & 1 & \tikzmark{A2}{2} & 1 & \tikzmark{A3}{1} & 0 & 0 & 0 & 0 & 0 & 0\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A3}{Element = 0}
+    \DownArrow[blue]{B4}{Lookup = 0}
+\end{frame}
+
+\begin{frame}
+
+    Step 144
+
+    \vspace{50pt}
+
+    \frametitle{\currentname}
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & 8 & 6 & 8 & 2 & \tikzmark{B8}{1}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{{{1}}} & 3 & 1 & \tikzmark{A2}{2} & 1 & \tikzmark{A3}{2} & 3 & 2 & 3 & 2 & 1 & \tikzmark{A4}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A4}{Element = 1}
+    \DownArrow[blue]{B8}{Lookup = 1}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+        \begin{itemize}
+            \item Time complexity: $O(n^2)$
+            \item Space complexity: $O(n)$
+            \item Lookup time complexity: $O(n)$
+        \end{itemize}
+\end{frame}
+
+
+\section{Dynamic Programming}
+
+\begin{frame}
+    \frametitle{\currentname}
+    \begin{itemize}
+        \item Similar approach to Naive Algorithm.
+        \item let $count$ be an array of $n + 1$ slots, where $count[i]$ stores the number of occurrences of the $i$-th number to the right.
+        \item How can we compute $count$?
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step \only<1>{0}\only<2>{1}
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{0} & \tikzmark{A9}{0} & \tikzmark{A10}{0} & \tikzmark{A11}{0} & \tikzmark{A12}{{\only<1>{0}\only<2>{1}}}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \only<2>{
+        \UpArrow[red]{A12}{Element = 1}
+        \DownArrow[blue]{B13}{Lookup = End (Stop)}
+    }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step 2
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{0} & \tikzmark{A9}{0} & \tikzmark{A10}{0} & \tikzmark{A11}{0} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A11}{Element = 2}
+    \DownArrow[blue]{B12}{Lookup = 1}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step 3
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{0} & \tikzmark{A9}{0} & \tikzmark{A10}{0} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A11}{Element = 2}
+    \DownArrow[blue]{B13}{Lookup = End (Stop)}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step 4
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{0} & \tikzmark{A9}{0} & \tikzmark{A10}{0} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A10}{Element = 8}
+    \DownArrow[blue]{B11}{Lookup = 2}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step 5
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{0} & \tikzmark{A9}{0} & \tikzmark{A10}{0} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A10}{Element = 8}
+    \DownArrow[blue]{B12}{Lookup = 1}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step 6
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{0} & \tikzmark{A9}{0} & \tikzmark{A10}{1} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A10}{Element = 8}
+    \DownArrow[blue]{B13}{Lookup = End (Stop)}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step 11
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{0} & \tikzmark{A9}{1} & \tikzmark{A10}{1} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A8}{Element = 8}
+    \DownArrow[blue]{B9}{Lookup = 6}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step 12
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{2} & \tikzmark{A9}{1} & \tikzmark{A10}{1} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A8}{Element = 8}
+    \DownArrow[blue]{B10}{Lookup = 8 (Found, Stop)}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Step 13
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{0} & \tikzmark{A2}{0} & \tikzmark{A3}{0} & \tikzmark{A4}{0} & \tikzmark{A5}{0} & \tikzmark{A6}{0} & \tikzmark{A7}{0} & \tikzmark{A8}{2} & \tikzmark{A9}{1} & \tikzmark{A10}{1} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A7}{Element = 6}
+    \DownArrow[blue]{B8}{Lookup = 8}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    Final Step
+
+    \vspace{50pt}
+
+    	\begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+            \cline{2-13}
+    		a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+            \cline{2-13}
+            count = & \tikzmark{A1}{1} & \tikzmark{A2}{3} & \tikzmark{A3}{1} & \tikzmark{A4}{2} & \tikzmark{A5}{1} & \tikzmark{A6}{1} & \tikzmark{A7}{2} & \tikzmark{A8}{2} & \tikzmark{A9}{1} & \tikzmark{A10}{1} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+            \cline{2-13}
+    	\end{tabular}
+
+    \UpArrow[red]{A1}{Element = 4}
+    \DownArrow[blue]{B13}{Lookup = End (Stop)}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+        \begin{itemize}
+            \item Time complexity: $O(k * n)$ where $k$ is the number of distinct elements in the array.
+            \item Space complexity: $O(n)$
+            \item Lookup time complexity: $O(n)$
+        \end{itemize}
+
+        \begin{block}{Exercise}
+            \begin{itemize}
+                \item Using this approach, is there a way to modify the algorithm so that it returns a list with all the elements of the array and their count?
+                %% TODO: Present the solution to this problem, using 'Who used my result' array.
+            \end{itemize}
+        \end{block}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{\currentname - Solution}
+    At each element, put a flag if it was used to get another answer (i.e. there's another element to the left).
+
+    \vspace{30pt}
+
+    \begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|C}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{3} & \tikzmark{B4}{0} & \tikzmark{B5}{7} & \tikzmark{B6}{0} & \tikzmark{B7}{6} & \tikzmark{B8}{8} & \tikzmark{B9}{6} & \tikzmark{B10}{8} & \tikzmark{B11}{2} & \tikzmark{B12}{1} & \tikzmark{B13}{}\\
+        \cline{2-13}
+        count = & \tikzmark{A1}{1} & \tikzmark{A2}{3} & \tikzmark{A3}{1} & \tikzmark{A4}{2} & \tikzmark{A5}{1} & \tikzmark{A6}{1} & \tikzmark{A7}{2} & \tikzmark{A8}{2} & \tikzmark{A9}{1} & \tikzmark{A10}{1} & \tikzmark{A11}{1} & \tikzmark{A12}{1}\\
+        \cline{2-13}
+    \end{tabular}
+
+    \DrawFlag[red]{B6}
+    \DrawFlag[red]{B7}
+    \DrawFlag[red]{B9}
+    \DrawFlag[red]{B10}
+
+    \vspace{30pt}
+
+    This way, we can get the elements that are not flagged.
+
+\end{frame}
+
+\section{Sorting}
+\subsection{Counting Sort}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    \begin{itemize}
+        \item Have an array $count$ of $\max\{a_i | 0 \leq i < n \}$ spaces.
+        \item For each element $e$ in the array, increment $count[e]$ by $1$.
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    Step 0
+    \vspace{50pt}
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & \tikzmark{B7}{7} & 8 & 6 & 8 & 2 & 1\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{20pt}
+
+    Find maximum element = 13.
+
+    \vspace{20pt}
+    \pause
+
+    \begin{tabular}{r |*{14}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-15}
+        index = & \tikzmark{A0}{0} & \tikzmark{A1}{1} & \tikzmark{A2}{2} & 3 & \tikzmark{A4}{4} & 5 & \tikzmark{A6}{6} & \tikzmark{A7}{7} & \tikzmark{A8}{8} & \tikzmark{A9}{9} & \tikzmark{A10}{10} & \tikzmark{A11}{11} & \tikzmark{A12}{12} & \tikzmark{A13}{13} \\
+        \hhline{~*{14}{=}}
+        count = & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+        \cline{2-15}
+    \end{tabular}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    Step 1
+    \vspace{50pt}
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & \tikzmark{B7}{7} & 8 & 6 & 8 & 2 & 1\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{41pt}
+
+    \begin{tabular}{r |*{14}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-15}
+        index = & \tikzmark{A0}{0} & \tikzmark{A1}{1} & \tikzmark{A2}{2} & 3 & \tikzmark{A4}{4} & 5 & \tikzmark{A6}{6} & \tikzmark{A7}{7} & \tikzmark{A8}{8} & \tikzmark{A9}{9} & \tikzmark{A10}{10} & \tikzmark{A11}{11} & \tikzmark{A12}{12} & \tikzmark{A13}{13} \\
+        \hhline{~*{14}{=}}
+        count = & 0 & 0 & 0 & 0 & \only<1>{0} \only<2>{1} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+        \cline{2-15}
+    \end{tabular}
+
+    \DownArrow[red]{B1}{Element = 4}
+    \only<2>{ \CurvedArrow[blue]{B1}{A4} }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    Step 2
+    \vspace{50pt}
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & \tikzmark{B7}{7} & 8 & 6 & 8 & 2 & 1\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{41pt}
+
+    \begin{tabular}{r |*{14}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-15}
+        index = & \tikzmark{A0}{0} & \tikzmark{A1}{1} & \tikzmark{A2}{2} & 3 & \tikzmark{A4}{4} & 5 & \tikzmark{A6}{6} & \tikzmark{A7}{7} & \tikzmark{A8}{8} & \tikzmark{A9}{9} & \tikzmark{A10}{10} & \tikzmark{A11}{11} & \tikzmark{A12}{12} & \tikzmark{A13}{13} \\
+        \hhline{~*{14}{=}}
+        count = & 0 & 0 & 0 & 0 & 1 & 0 & \only<1>{0} \only<2>{1} & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+        \cline{2-15}
+    \end{tabular}
+
+    \DownArrow[red]{B2}{Element = 6}
+    \only<2>{ \CurvedArrow[blue]{B2}{A6} }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    Step 3
+    \vspace{50pt}
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & \tikzmark{B7}{7} & 8 & 6 & 8 & 2 & 1\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{41pt}
+
+    \begin{tabular}{r |*{14}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-15}
+        index = & \tikzmark{A0}{0} & \tikzmark{A1}{1} & \tikzmark{A2}{2} & 3 & \tikzmark{A4}{4} & 5 & \tikzmark{A6}{6} & \tikzmark{A7}{7} & \tikzmark{A8}{8} & \tikzmark{A9}{9} & \tikzmark{A10}{10} & \tikzmark{A11}{11} & \tikzmark{A12}{12} & \tikzmark{A13}{13} \\
+        \hhline{~*{14}{=}}
+        count = & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & \only<1>{0} \only<2>{1}\\
+        \cline{2-15}
+    \end{tabular}
+
+    \DownArrow[red]{B3}{Element = 13}
+    \only<2>{ \CurvedArrow[blue]{B3}{A13} }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    Step 4
+    \vspace{50pt}
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & \tikzmark{B7}{7} & 8 & 6 & 8 & 2 & 1\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{41pt}
+
+    \begin{tabular}{r |*{14}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-15}
+        index = & \tikzmark{A0}{0} & \tikzmark{A1}{1} & \tikzmark{A2}{2} & 3 & \tikzmark{A4}{4} & 5 & \tikzmark{A6}{6} & \tikzmark{A7}{7} & \tikzmark{A8}{8} & \tikzmark{A9}{9} & \tikzmark{A10}{10} & \tikzmark{A11}{11} & \tikzmark{A12}{12} & \tikzmark{A13}{13} \\
+        \hhline{~*{14}{=}}
+        count = & \only<1>{0} \only<2>{1} & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+        \cline{2-15}
+    \end{tabular}
+
+    \DownArrow[red]{B4}{Element = 0}
+    \only<2>{ \CurvedArrow[blue]{B4}{A0} }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    Step 5
+    \vspace{50pt}
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & 7 & 8 & 6 & 8 & 2 & \tikzmark{B7}{1}\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{41pt}
+
+    \begin{tabular}{r |*{14}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-15}
+        index = & \tikzmark{A0}{0} & \tikzmark{A1}{1} & \tikzmark{A2}{2} & 3 & \tikzmark{A4}{4} & 5 & \tikzmark{A6}{6} & \tikzmark{A7}{7} & \tikzmark{A8}{8} & \tikzmark{A9}{9} & \tikzmark{A10}{10} & \tikzmark{A11}{11} & \tikzmark{A12}{12} & \tikzmark{A13}{13} \\
+        \hhline{~*{14}{=}}
+        count = & 1 & 0 & 0 & 0 & 1 & 0 & \only<1>{1} \only<2>{2} & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+        \cline{2-15}
+    \end{tabular}
+
+    \DownArrow[red]{B5}{Element = 6}
+    \only<2>{ \CurvedArrow[blue]{B5}{A6} }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    Step 12
+    \vspace{50pt}
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & 7 & 8 & 6 & 8 & 2 & \tikzmark{B12}{1}\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{41pt}
+
+    \begin{tabular}{r |*{14}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-15}
+        index = & \tikzmark{A0}{0} & \tikzmark{A1}{1} & \tikzmark{A2}{2} & 3 & \tikzmark{A4}{4} & 5 & \tikzmark{A6}{6} & \tikzmark{A7}{7} & \tikzmark{A8}{8} & \tikzmark{A9}{9} & \tikzmark{A10}{10} & \tikzmark{A11}{11} & \tikzmark{A12}{12} & \tikzmark{A13}{13} \\
+        \hhline{~*{14}{=}}
+        count = & 2 & \only<1>{0} \only<2>{1} & 1 & 0 & 1 & 0 & 3 & 1 & 2 & 0 & 0 & 0 & 0 & 1\\
+        \cline{2-15}
+    \end{tabular}
+
+    \DownArrow[red]{B12}{Element = 1}
+    \only<2>{ \CurvedArrow[blue]{B12}{A1} }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    Final result
+    \vspace{50pt}
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & 7 & 8 & 6 & 8 & 2 & \tikzmark{B12}{1}\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{41pt}
+
+    \begin{tabular}{r |*{14}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-15}
+        index = & \tikzmark{A0}{0} & \tikzmark{A1}{1} & \tikzmark{A2}{2} & 3 & \tikzmark{A4}{4} & 5 & \tikzmark{A6}{6} & \tikzmark{A7}{7} & \tikzmark{A8}{8} & \tikzmark{A9}{9} & \tikzmark{A10}{10} & \tikzmark{A11}{11} & \tikzmark{A12}{12} & \tikzmark{A13}{13} \\
+        \hhline{~*{14}{=}}
+        count = & 2 & 1 & 1 & \red 0 & 1 & \red 0 & 3 & 1 & 2 & \red 0 & \red 0 & \red 0 & \red 0 & 1\\
+        \cline{2-15}
+    \end{tabular}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+        \begin{itemize}
+            \item Time complexity: $O(n)$
+            \item Space complexity: $O(\max{a_i})$
+            \item Lookup time complexity: $O(1)$
+        \end{itemize}
+\end{frame}
+
+\subsection{Hashing}
+
+\begin{frame}
+    \frametitle{\currentname}
+    \begin{itemize}
+        \item With Counting Sort, there's a lot of unused space.
+        \item Take a uniformly distributed hash function $f : A \mapsto B$ where $A$ is our original space (e.g. $[1, 10^{12}]$) and $B$ is a new smaller space (e.g. $[1, 10^8]$)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    What is a good number for the size of $B$?
+    \pause
+    \begin{itemize}
+        \item The size of the original array.
+        \pause
+        \item Get a random hash function (with large range $R$) and check for the minimum hash $h$. $|R|/h$ would be a good estimate.
+    \end{itemize}
+    \begin{center}
+        \begin{tikzpicture}
+            % a straight line segment
+            \draw[ultra thick] (1,0) -- (10,0);
+            % the ticks and their labels
+            \foreach \x  in {2,...,9}
+              \fill[xshift=\x cm, red] (0pt,0pt) circle (3pt);
+            % the thicker segment
+            % the labels
+            \draw (1,0.2) to (2,0.2) {};
+            \node at (1.5, 0.5) {$h$};
+            % \node[fill=white,draw=black,circle,inner sep=2pt,label=above:{$L_1=119.94$}] at (8.9,0) {};
+            \node at (5.5,-0.6) {$R$};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+        \begin{itemize}
+            \item Time complexity: $O(n)$
+            \item Space complexity: $O(|B|)$
+            \item Lookup time complexity: $O(1)$
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    But what about collitions?
+    \begin{itemize}
+        \item Birthday Paradox. With $23$ people, there's $50.7\%$ chance of a shared birthday.
+        \item In general, for a space of size $N$ and $k$ random elements of $N$:
+            \[\begin{array}{cCc}
+            P & = & 1 - \frac{N-1}{N} \times \frac{N-2}{N} \times \ldots \times \frac{N-(k-1)}{N}\\
+            & \approx & 1 - e ^ {\frac{-k(k-1)}{2N}}\\
+            & \approx & \frac{k^2}{2N}
+            \end{array}\]
+        \item Expected number of collitions:
+            \[
+                k - N * (1 - ((N-1)/N)^k)
+            \]
+    \end{itemize}
+\end{frame}
+
+\subsection{Traditional Sorting}
+\begin{frame}
+    \frametitle{\currentname}
+    \begin{itemize}
+        \item Use a traditional sorting technique, e.g. Quick Sort or Merge Sort.
+        \item Count consecutive equal elements
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+    % 4 6 13 0 6 0 7 8 6 8 2 1
+    % 0 0 1  2 4 6 6 6 7 8 8 13
+
+    \only<1>{
+        Step 0
+    }
+    \only<2>{
+        Step 1
+    }
+    \only<3>{
+        Step 2
+    }
+    \only<4>{
+        Step 3
+    }
+    \only<5>{
+        Step 4
+    }
+    \only<6>{
+        Step 5
+    }
+    \only<7>{
+        Step 6
+    }
+    \only<8>{
+        Step 7
+    }
+    \only<9>{
+        Step 8
+    }
+    \only<10>{
+        Step 12
+    }
+
+    \vspace{50pt}
+    \only<1>{
+    \begin{center}
+    \begin{tabular}{r|*{12}{c|}}
+        \cline{2-13}
+        a = & 4 & 6 & 13 & 0 & 6 & 0 & 7 & 8 & 6 & 8 & 2 & 1\\
+        \cline{2-13}
+    \end{tabular}
+    \end{center}
+    }
+    \only<2->{
+    \begin{center}
+    \begin{tabular}{r|C|C|C|C|C|C|C|C|C|C|C|C|}
+        \cline{2-13}
+        a = & \tikzmark{A1}{0}& \tikzmark{A2}{0}& \tikzmark{A3}{1}& \tikzmark{A4}{2}& \tikzmark{A5}{4}& \tikzmark{A6}{6}& \tikzmark{A7}{6}& \tikzmark{A8}{6}& \tikzmark{A9}{7}& \tikzmark{A10}{8}& \tikzmark{A11}{8}& \tikzmark{A12}{13}\\
+        \cline{2-13}
+    \end{tabular}
+    \end{center}
+    }
+    \vspace{15pt}
+    \only<2> {
+        \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \cline{2-2}
+            results = & 0, 1\\
+            \cline{2-2}
+        \end{tabular}
+    }
+
+    \only<3> {
+        \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \cline{2-2}
+            results = & 0, 2\\
+            \cline{2-2}
+        \end{tabular}
+    }
+
+    \only<4> {
+        \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \cline{2-3}
+            results = & 0, 2 & 1, 1\\
+            \cline{2-3}
+        \end{tabular}
+    }
+
+    \only<5> {
+        \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \cline{2-4}
+            results = & 0, 2 & 1, 1 & 2, 1\\
+            \cline{2-4}
+        \end{tabular}
+    }
+
+    \only<6> {
+        \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \cline{2-5}
+            results = & 0, 2 & 1, 1 & 2, 1 & 4, 1\\
+            \cline{2-5}
+        \end{tabular}
+    }
+
+    \only<7-9> {
+        \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \cline{2-6}
+            results = & 0, 2 & 1, 1 & 2, 1 & 4, 1 & 6, \only<7>{1}\only<8>{2}\only<9>{3}\\
+            \cline{2-6}
+        \end{tabular}
+    }
+
+    \only<10> {
+        \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|}
+            \cline{2-9}
+            results = & 0, 2 & 1, 1 & 2, 1 & 4, 1 & 6, 3 & 7, 1 & 8, 2 & 13, 1\\
+            \cline{2-9}
+        \end{tabular}
+    }
+
+    \only<2>{
+        \DownArrow[blue]{A1}{Element = 0}
+    }
+
+    \only<3>{
+        \DownArrow[blue]{A2}{Element = 0}
+        \CurvedArrowAbove[red]{A2}{A1}
+    }
+
+    \only<4>{
+        \DownArrow[blue]{A3}{Element = 1}
+    }
+
+    \only<5>{
+        \DownArrow[blue]{A4}{Element = 2}
+    }
+
+    \only<6>{
+        \DownArrow[blue]{A5}{Element = 4}
+    }
+
+    \only<7>{
+        \DownArrow[blue]{A6}{Element = 6}
+    }
+
+    \only<8>{
+        \DownArrow[blue]{A7}{Element = 6}
+        \CurvedArrowAbove[red]{A7}{A6}
+    }
+
+    \only<9>{
+        \DownArrow[blue]{A8}{Element = 6}
+        \CurvedArrowAbove[red]{A8}{A6}
+    }
+
+    \only<10>{
+        \DownArrow[blue]{A12}{Element = 13}
+    }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+        \begin{itemize}
+            \item Time complexity: $O(n*log(n))$
+            \item Space complexity: $O(n)$
+            \item Lookup time complexity: $O(log(n))$
+        \end{itemize}
+\end{frame}
+\section{Trees}
+
+\tikzset{hide on/.code={\only<#1>{\color{white}}}}
+
+\begin{frame}
+    \frametitle{\currentname}
+    \begin{itemize}
+        \item Build a binary search tree with the input.
+        \item At each node, keep track of the times it has been seen.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+
+    \only<1> {
+        Step 0
+    }
+    \only<2> {
+        Step 1
+    }
+    \only<3> {
+        Step 2
+    }
+    \only<4> {
+        Step 3
+    }
+    \only<5> {
+        Step 4
+    }
+    \only<6> {
+        Step 5
+    }
+    \only<7> {
+        Step 6
+    }
+    \only<8> {
+        Final Step
+    }
+    \vspace{40pt}
+
+
+    \begin{tabular}{r |*{12}{>{\centering\arraybackslash}p{5pt}|}}
+        \cline{2-13}
+        a = & \tikzmark{B1}{4} & \tikzmark{B2}{6} & \tikzmark{B3}{13} & \tikzmark{B4}{0} & \tikzmark{B5}{6} & \tikzmark{B6}{0} & 7 & 8 & 6 & 8 & 2 & \tikzmark{B12}{1}\\
+        \cline{2-13}
+    \end{tabular}
+
+    \vspace{10pt}
+
+    \only<2>{
+    \DownArrow[red]{B1}{Element = 4}
+    }
+    \only<3>{
+    \DownArrow[red]{B2}{Element = 6}
+    }
+
+    \only<4>{
+    \DownArrow[red]{B3}{Element = 13}
+    }
+
+    \only<5>{
+    \DownArrow[red]{B4}{Element = 0}
+    }
+
+    \only<6>{
+    \DownArrow[red]{B5}{Element = 6}
+    }
+
+    \only<7>{
+    \DownArrow[red]{B6}{Element = 0}
+    }
+
+    \only<8>{
+    \DownArrow[red]{B12}{Element = 1}
+    }
+
+    \only<1-3>{
+    \begin{center}
+        \only<3>{}
+        \begin{tikzpicture}[>=Stealth]
+            \graph[binary tree layout]{
+                el = 4 cnt = 1 [hide on=-1] -> [hide on=-2] {
+                    el = w cnt = q [hide on=-99] -> [hide on=-99]{
+                        el = r cnt = t [hide on=-99] -> [hide on=-99]{
+                            X [hide on=-99],
+                            el = x cnt = y [hide on=-99]
+                        },
+                        el = r cnt = y [hide on=-99]
+                    },
+                    el = 6  cnt = 1 [hide on=-2] -> [hide on=-99]{
+                        el = x cnt = z [hide on=-99],
+                        el = wy cnt = w [hide on=-99]
+                    }
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    }
+
+    \only<4-5>{
+    \begin{center}
+        \only<5>{}
+        \begin{tikzpicture}[>=Stealth]
+            \graph[binary tree layout]{
+                el = 6 cnt = 1 -> {
+                    el = 4 cnt = 1 -> [hide on=-4]{
+                        el = 0 cnt = 1 [hide on=-4] -> [hide on=-99] {
+                            X [hide on=-99],
+                            el = x cnt = y [hide on=-99]
+                        },
+                        el = r cnt = y [hide on=-99]
+                    },
+                    el = 13 cnt = 1 -> [hide on=-99] {
+                        el = x cnt = z [hide on=-99],
+                        el = wy cnt = w [hide on=-99]
+                    }
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    }
+
+    \only<6>{
+    \begin{center}
+        \begin{tikzpicture}[>=Stealth]
+            \graph[binary tree layout]{
+                el = 6 cnt = 2 -> {
+                    el = 4 cnt = 1 -> {
+                        el = 0 cnt = 1 -> [hide on=-99] {
+                            X [hide on=-99],
+                            el = x cnt = y [hide on=-99]
+                        },
+                        el = r cnt = y [hide on=-99]
+                    },
+                    el = 13 cnt = 1 -> [hide on=-99] {
+                        el = x cnt = z [hide on=-99],
+                        el = wy cnt = w [hide on=-99]
+                    }
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    }
+
+    \only<7>{
+    \begin{center}
+        \begin{tikzpicture}[>=Stealth]
+            \graph[binary tree layout]{
+                el = 6 cnt = 2 -> {
+                    el = 4 cnt = 1 -> {
+                        el = 0 cnt = 2 -> [hide on=-99] {
+                            X [hide on=-99],
+                            el = x cnt = y [hide on=-99]
+                        },
+                        el = r cnt = y [hide on=-99]
+                    },
+                    el = 13 cnt = 1 -> [hide on=-99] {
+                        el = x cnt = z [hide on=-99],
+                        el = wy cnt = w [hide on=-99]
+                    }
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    }
+
+    \only<8>{
+    \begin{center}
+        \begin{tikzpicture}[>=Stealth]
+            \graph[binary tree layout]{
+                el = 6 cnt = 3 -> {
+                    el = 2 cnt = 1 -> {
+                        el = 0 cnt = 2 -> {
+                            ,
+                            el = 1 cnt = 1
+                        },
+                        el = 4 cnt = 1
+                    },
+                    el = 8 cnt = 2 -> {
+                        el = 7 cnt = 1,
+                        el = 13 cnt = 1
+                    }
+                }
+            };
+        \end{tikzpicture}
+    \end{center}
+    }
+\end{frame}
+
+\begin{frame}
+    \frametitle{\currentname}
+        \begin{itemize}
+            \item Time complexity: $O(n*log(n))$
+            \item Space complexity: $O(n)$
+            \item Lookup time complexity: $O(log(n))$
+        \end{itemize}
+\end{frame}
+
+\end{document}
