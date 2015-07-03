@@ -1,0 +1,2 @@
+To compile presentation1.tex use lualatex (instead of pdflatex).
+You may need to run the command two or three times to get the correct pdf.
