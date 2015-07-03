@@ -1,0 +1,11 @@
+*.in
+Foundations of data science.pdf
+*.docx
+output.txt
+*.out
+*.aux
+*.log
+*.nav
+*.snm
+*.toc
+run.sh
